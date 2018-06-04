@@ -1,0 +1,87 @@
+<html>
+
+<head>
+  <title>Fournisseur</title>
+  <meta charset="utf-8" />
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+  <center>
+    <p>
+      <h2>Espace fournisseur</h2></p>
+    <p>
+  </center>
+  <table class="table table-bordered">
+    <tr>
+      <th>Client ID</th>
+      <th>Pack</th>
+      <th>Actions autorisées</th>
+      <th>Nom et Prénom</th>
+      <th>Email</th>
+      <th>Sexe</th>
+      <th>Téléphone</th>
+      <th>Adresse</th>
+      <th>Nationalité</th>
+      <th>Statut Social</th>
+      <th>Etat Civil</th>
+      <th>Actions</th>
+    </tr>
+    <% if(dataDB1.length){
+    for(var i = 0;i < dataDB1[0].values.length;i++) { %>
+      <tr>
+        <td>
+          <%=dataDB1[0].values[i][0]%>
+        </td>
+        <td>
+          <%=dataDB1[0].values[i][1]%>
+        </td>
+        <td>
+          <%=dataDB1[0].values[i][2]%>
+        </td>
+        <td>
+          <%=dataDB2[0].values[i][1]%>
+        </td>
+        <td>
+          <%=dataDB2[0].values[i][2]%>
+        </td>
+        <td>
+          <%=dataDB2[0].values[i][3]%>
+        </td>
+        <td>
+          <%=dataDB2[0].values[i][4]%>
+        </td>
+        <td>
+          <%=dataDB2[0].values[i][5]%>
+        </td>
+        <td>
+          <%=dataDB2[0].values[i][6]%>
+        </td>
+        <td>
+          <%=dataDB2[0].values[i][7]%>
+        </td>
+        <td>
+          <%=dataDB2[0].values[i][8]%>
+        </td>
+        <td>
+          <% if(dataDB1[0].values[i][1].length) {%>
+            <form action="provider" method="post">
+              <input type="radio" name="action" value=Collecte checked> Collecte<br>
+              <input type="radio" name="action" value=Traitement> Traitement<br>
+              <input type="radio" name="action" value=Transfert> Transfert<br>
+              <button name="id" value="<%=dataDB1[0].values[i][0]%>" type="submit">Appliquer</button>
+            </form>
+            <% } %>
+        </td>
+      </tr>
+      <% }
+  }else{ %>
+        <tr>
+          <td>No user</td>
+        </tr>
+        <% } %>
+  </table>
+</body>
+
+</html>

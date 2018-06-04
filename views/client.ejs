@@ -1,0 +1,52 @@
+<html>
+
+<head>
+  <title>Client</title>
+  <meta charset="utf-8" />
+</head>
+
+<body>
+  <center>
+    <p>
+      <h2>Espace client</h2></p>
+    <p>
+      <h2>Bienvenue!</h2></p>
+  </center>
+  <p>
+    <h3>Veuillez choisir votre pack de données à partager avec nous</h3></p>
+  <form method="post">
+    <div>
+      <input type="radio" name="pack" value=Minimal checked> Pack minimal<br><br>
+      <input type="text" name="nom1" placeholder="Nom et Prénom">
+      <input type="text" name="mail1" placeholder="Adresse mail"><br><br>
+      <input type="radio" name="pack" value=Moyen> Pack moyen<br><br>
+      <input type="text" name="nom2" placeholder="Nom et Prénom">
+      <input type="text" name="mail2" placeholder="Adresse mail">
+      <input type="text" name="sexe2" placeholder="Sexe">
+      <input type="text" name="tel2" placeholder="Téléphone">
+      <input type="text" name="adresse2" placeholder="Adresse postale"><br><br>
+      <input type="radio" name="pack" value=Maximal> Pack maximal<br><br>
+      <input type="text" name="nom3" placeholder="Nom et Prénom">
+      <input type="text" name="mail3" placeholder="Adresse mail">
+      <input type="text" name="sexe3" placeholder="Sexe">
+      <input type="text" name="tel3" placeholder="Téléphone">
+      <input type="text" name="adresse3" placeholder="Adresse postale"><br><br>
+      <input type="text" name="nationalite3" placeholder="Nationalité">
+      <input type="text" name="statut3" placeholder="Statut social">
+      <input type="text" name="etat3" placeholder="Etat civil"><br>
+    </div>
+    <p>
+      <h3>Veuillez choisir les actions autorisées sur vos données</h3></p>
+    <div>
+      <input type="checkbox" name="action" value=Collecte checked> Collecte<br>
+      <input type="checkbox" name="action" value=Traitement> Traitement<br>
+      <input type="checkbox" name="action" value=Transfert> Transfert<br>
+    </div>
+    <p>
+      <h3>Votre identifiant client</h3></p>
+    <input type="text" name="id" placeholder="Identifiant client" required>
+    <button type="submit">Valider</button>
+  </form>
+</body>
+
+</html>

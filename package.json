@@ -1,0 +1,22 @@
+{
+  "name": "dapp-prototype",
+  "version": "1.0.0",
+  "description": "Prototype of a Decentralized Application (dApp) using Ethereum, Solidity, Ganache and nodeJS. A prototype of how Blockchain can ensure consent and auditability on personal data usage.",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-sanitize-escape": "^1.1.0",
+    "ganache-cli": "^6.1.0",
+    "solc": "^0.4.23",
+    "sql.js": "^0.5.0",
+    "web3": "^0.20.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "ganache-cli & node app.js"
+  },
+  "author": "ahmed",
+  "license": "ISC",
+  "keywords": []
+}
