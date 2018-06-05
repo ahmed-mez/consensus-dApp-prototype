@@ -90,7 +90,7 @@ app.post('/client', function(req, res) {
       gas: settings.GAS_PRICE
     });
   } else {
-    res.send("Please enter a valid id!");
+    res.send("Please enter a valid id! (between 1 and 9)");
   }
 });
 
@@ -147,4 +147,6 @@ app.get('/auditor', function(req, res) {
 });
 
 // Start listening
-app.listen(settings.PORT, settings.HOST);
+app.listen(settings.PORT, settings.HOST, function() {
+  console.log("listening on port 8080");
+});
