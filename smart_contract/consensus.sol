@@ -4,11 +4,11 @@ contract consensus {
 
   struct client {
     uint id;
-    uint8 pack;
-    uint8[3] actions;
-    bytes32 tx_id;
-    uint8[3][] doneActions;
-    bytes32[] tx_actions;
+    uint8[] pack;
+    uint8[3][] actions;
+    bytes32[] txs;
+    uint8[3][] done_actions;
+    bytes32[] tx_done_actions;
   }
 
   mapping (address => client) public clients;
@@ -18,38 +18,60 @@ contract consensus {
   }
 
   function setClient(address _address, uint _id, uint8 _pack, uint8[3] _actions) public {
+    uint8[3] memory acts;
+    acts[0] = _actions[0];
+    acts[1] = _actions[1];
+    acts[2] = _actions[2];
+    clients[_address].actions.push(acts);
+    clients[_address].pack.push(_pack);
     clients[_address].id = _id;
-    clients[_address].pack = _pack;
-    clients[_address].actions[0] = _actions[0];
-    clients[_address].actions[1] = _actions[1];
-    clients[_address].actions[2] = _actions[2];
     if (notAdded(_address)) {
-      clientsAddresses.push(_address);
+    clientsAddresses.push(_address);
     }
   }
 
-  function setTx(address _address, bytes32 _tx_id) public {
-  	clients[_address].tx_id = _tx_id;
+  function getClientID(address _address) view public returns (uint) {
+    return clients[_address].id;
   }
 
-  function setDoneActions(address _address, uint8[3] _doneActions) public {
+  function getPack(address _address) view public returns(uint8[]) {
+    return clients[_address].pack;
+  }
+
+  function getActions(address _address) view public returns (uint8[3][]) {
+    return clients[_address].actions;
+  }
+
+  function setTx(address _address, bytes32 _tx) public {
+  	clients[_address].txs.push(_tx);
+  }
+
+  function getTxs(address _address) view public returns (bytes32[]) {
+    return clients[_address].txs;
+  }
+
+  function setDoneActions(address _address, uint8[3] _done_actions) public {
     uint8[3] memory acts;
-    acts[0] = _doneActions[0];
-    acts[1] = _doneActions[1];
-    acts[2] = _doneActions[2];
-    clients[_address].doneActions.push(acts);
+    acts[0] = _done_actions[0];
+    acts[1] = _done_actions[1];
+    acts[2] = _done_actions[2];
+    clients[_address].done_actions.push(acts);
   }
 
-  function setTxAction(address _address, bytes32 _tx_actions) public {
-  	clients[_address].tx_actions.push(_tx_actions);
+  function getDoneActions(address _address) view public returns (uint8[3][]) {
+    return clients[_address].done_actions;
+  }
+
+  function setTxDoneAction(address _address, bytes32 _tx_done_action) public {
+  	clients[_address].tx_done_actions.push(_tx_done_action);
+  }
+
+  function getTxDoneActions(address _address) view public returns (bytes32[]) {
+    return clients[_address].tx_done_actions;
   }
 
   function getAddresses() view public returns (address[]) {
     return clientsAddresses;
-  }
-
-  function getClient(address _address) view public returns (uint, uint8, uint8[3], bytes32, uint8[3][]) {
-    return (clients[_address].id, clients[_address].pack, clients[_address].actions, clients[_address].tx_id, clients[_address].doneActions);
   }
 
   function notAdded(address clientAddr) view public returns (bool) {
