@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>Fournisseur</title>
+  <title>Service Provider</title>
   <meta charset="utf-8" />
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
   <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
@@ -10,22 +10,22 @@
 <body>
   <center>
     <p>
-      <h2>Espace fournisseur</h2></p>
+      <h2>Service Provider Account</h2></p>
     <p>
   </center>
   <table class="table table-bordered">
     <tr>
       <th>Client ID</th>
       <th>Pack</th>
-      <th>Actions autorisées</th>
-      <th>Nom et Prénom</th>
+      <th>Allowed actions</th>
+      <th>Name</th>
       <th>Email</th>
-      <th>Sexe</th>
-      <th>Téléphone</th>
-      <th>Adresse</th>
-      <th>Nationalité</th>
-      <th>Statut Social</th>
-      <th>Etat Civil</th>
+      <th>Gender</th>
+      <th>Phone</th>
+      <th>Address</th>
+      <th>Nationality</th>
+      <th>Social status</th>
+      <th>Civil status</th>
       <th>Actions</th>
     </tr>
     <% if(dataDB1.length){
@@ -67,10 +67,10 @@
         <td>
           <% if(dataDB1[0].values[i][1].length) {%>
             <form action="provider" method="post">
-              <input type="radio" name="action" value=Collecte checked> Collecte<br>
-              <input type="radio" name="action" value=Traitement> Traitement<br>
-              <input type="radio" name="action" value=Transfert> Transfert<br>
-              <button name="id" value="<%=dataDB1[0].values[i][0]%>" type="submit">Appliquer</button>
+              <input type="radio" name="action" value=Collection checked> Collection<br>
+              <input type="radio" name="action" value=Treatment> Treatment<br>
+              <input type="radio" name="action" value=Transfer> Transfer<br>
+              <button name="id" value="<%=dataDB1[0].values[i][0]%>" type="submit">Apply</button>
             </form>
             <% } %>
         </td>
