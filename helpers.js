@@ -67,7 +67,7 @@ exports.updateDataTable = function(db, data) {
       sqlstr += "UPDATE data SET etat ='' WHERE id =" + data.id + ";"
       db.run(sqlstr);
       break;
-    case "Moyen":
+    case "Medium":
       sqlstr = "UPDATE data SET nom ='" + data.nom2 + "' WHERE id =" + data.id + ";"
       sqlstr += "UPDATE data SET mail ='" + data.mail2 + "' WHERE id =" + data.id + ";"
       sqlstr += "UPDATE data SET sexe ='" + data.sexe2 + "' WHERE id =" + data.id + ";"
