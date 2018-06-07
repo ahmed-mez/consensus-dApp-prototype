@@ -57,8 +57,7 @@ app.get('/deploy', function(req, res) {
         console.log("Contract mined! Address: " + contract.address);
         contractInstance = consensusContract.at(contract.address);
         res.render('deploy', {
-          data1: "Contract transaction send: TransactionHash: " + contract.transactionHash + " waiting to be mined...",
-          data2: "Contract mined! Address: " + contract.address,
+          data: "Contract mined! Address: " + contract.address,
         });
       }
     }
@@ -80,6 +79,7 @@ app.post('/client', function(req, res) {
     helpers.updateDataTable(db, req.body);
     // Save client choices to the Blockchain
     var pack = helpers.getPackID(req.body.pack);
+    console.log(req.body.action);
     var actions = helpers.convertActions(req.body.action);
     var tx = contractInstance.setClient(web3.eth.accounts[clientID], clientID, pack, actions, {
       from: web3.eth.accounts[clientID],
@@ -114,7 +114,7 @@ app.post('/provider', function(req, res) {
     from: web3.eth.accounts[settings.PROVIDER_ID],
     gas: settings.GAS_PRICE
   });
-  contractInstance.setTxAction(web3.eth.accounts[clientID], tx_actions, {
+  contractInstance.setTxDoneAction(web3.eth.accounts[clientID], tx_actions, {
     from: web3.eth.accounts[settings.PROVIDER_ID],
     gas: settings.GAS_PRICE
   });
@@ -133,14 +133,45 @@ app.get('/auditor', function(req, res) {
   var resultsDB1 = db.exec("SELECT * FROM users");
   var resultsDB2 = db.exec("SELECT * FROM data");
   // Get clients choices saved in the Blockchain
-  var resultsBC = []
+  var idBC = [];
+  var packBC = [];
+  var actionsBC = [];
+  var actionsTxBC = [];
+  var datesChosenActionsBC = [];
+  var doneActionsBC = [];
+  var doneActionsTxBC = [];
+  var datesDoneActionsBC = [];
   var addresses = contractInstance.getAddresses();
   for (let i = 0; i < addresses.length; i++) {
-    info = contractInstance.getClient(addresses[i]);
-    resultsBC.push(helpers.cleanClientInfo(addresses[i], info));
+    var id = contractInstance.getClientID(addresses[i]);
+    var pack = contractInstance.getPack(addresses[i]);
+    var actions = contractInstance.getActions(addresses[i]);
+    var actionsTx = contractInstance.getTxs(addresses[i]);
+    var datesChosenActions = helpers.getDateFromTxHashes(web3, actionsTx);
+    var doneActions = contractInstance.getDoneActions(addresses[i]);
+    var doneActionsTx = contractInstance.getTxDoneActions(addresses[i]);
+    var datesDoneActions = helpers.getDateFromTxHashes(web3, doneActionsTx);
+    var checkedDoneActions = helpers.checkDoneActions(web3, actions, actionsTx, doneActions, doneActionsTx)
+    console.log("checked actions");
+    console.log(checkedDoneActions);
+    idBC.push(helpers.cleanClientInfo(addresses[i], id));
+    packBC.push(helpers.cleanPack(pack));
+    actionsBC.push(helpers.cleanAllowedActions(actions));
+    actionsTxBC.push(actionsTx);
+    datesChosenActionsBC.push(datesChosenActions);
+    doneActionsBC.push(helpers.cleanDoneActions(checkedDoneActions));
+    doneActionsTxBC.push(doneActionsTx);
+    datesDoneActionsBC.push(datesDoneActions);
   }
   res.render('auditor', {
-    dataBC: resultsBC,
+    idBC: idBC,
+    packBC: packBC,
+    actionsBC: actionsBC,
+    actionsTxBC: actionsTxBC,
+    datesChosenActionsBC: datesChosenActionsBC,
+    doneActionsBC: doneActionsBC,
+    doneActionsTxBC: doneActionsTxBC,
+    datesDoneActionsBC: datesDoneActionsBC,
     dataDB1: resultsDB1,
     dataDB2: resultsDB2,
   });

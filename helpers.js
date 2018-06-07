@@ -1,18 +1,18 @@
 // Dictionaries used to convert packs and actions
 const Packs = {
   "Minimal": 1,
-  "Moyen": 2,
+  "Medium": 2,
   "Maximal": 3
 };
 const unPacks = {
   1: "Minimal",
-  2: "Moyen",
+  2: "Medium",
   3: "Maximal"
 };
 const Actions = {
-  1: "Collecte",
-  2: "Traitement",
-  3: "Transfert",
+  1: "Collection",
+  2: "Treatment",
+  3: "Transfer",
 };
 
 // Initialize database with empty data columns
@@ -95,11 +95,11 @@ exports.updateDataTable = function(db, data) {
 // Convert actions so it can be interpreted by the smart contract
 exports.convertActions = function(data) {
   var actions = [0, 0, 0];
-  if (data.includes('Collecte'))
+  if (data.includes('Collection'))
     actions[0] = 1;
-  if (data.includes('Traitement'))
+  if (data.includes('Treatment'))
     actions[1] = 1;
-  if (data.includes('Transfert'))
+  if (data.includes('Transfer'))
     actions[2] = 1;
   return actions;
 }
@@ -109,30 +109,122 @@ exports.getPackID = function(pack) {
   return Packs[pack];
 }
 
-// Clean client infos received from the Blockchain
-exports.cleanClientInfo = function(address, info) {
-  var actionsString = "";
-  var actionsArray = info[2].toString().split(",");
-  for (let i = 0; i < actionsArray.length; i++) {
-    if (actionsArray[i] == "1")
-      actionsString += Actions[i + 1] + " ";
+// Get the time of chosen/done actions by their correspondant transactions hashes
+exports.getDateFromTxHashes = function(web3, txs) {
+  var result = [];
+  for (let i = 0; i < txs.length; i++) {
+    var block = web3.eth.getTransaction(txs[i]).blockNumber;
+    var date = new Date(web3.eth.getBlock(block).timestamp * 1000).toUTCString();
+    result.push(date);
   }
-  var actionsDoneString = "";
-  var actionsDoneArray = info[4].toString().replace(/,/g, '').match(/.{1,3}/g);
-  if (actionsDoneArray != null) {
-    for (let i = 0; i < actionsDoneArray.length; i++) {
-      for (let j = 0; j < actionsDoneArray[i].length; j++) {
-        if (actionsDoneArray[i][j] == "1")
-          actionsDoneString += Actions[j + 1] + ", ";
+  return result;
+}
+
+// Clean allowed actions received from the Blockchain
+exports.cleanAllowedActions = function(actions) {
+  var result = [];
+  for (let i = 0; i < actions.length; i++) {
+    var actionsString = "";
+    var actionsArray = actions[i].toString().split(",");
+    for (let j = 0; j < actionsArray.length; j++) {
+      if (actionsArray[j] == "1")
+        actionsString += Actions[j + 1] + " ";
+    }
+    result.push(actionsString);
+  }
+  return result;
+}
+
+// Clean checked done actions received from the Blockchain
+exports.cleanDoneActions = function(actions) {
+  var result = [];
+  for (let i = 0; i < actions.length; i++) {
+    var actionsString = "";
+    var actionsArray = actions[i][0].toString().split(",");
+    for (let j = 0; j < actionsArray.length; j++) {
+      if (actionsArray[j] == "1") {
+        actionsString += Actions[j + 1];
+        result.push([actions[i][1], actionsString]);
       }
     }
   }
+  console.log(result);
+  return result;
+}
+
+// Clean client pack received from the Blockchain
+exports.cleanPack = function(pack) {
+  var result = [];
+  for (let i = 0; i < pack.length; i++) {
+    result.push(unPacks[pack[i].toNumber()]);
+  }
+  return result;
+}
+
+// Clean client infos received from the Blockchain
+exports.cleanClientInfo = function(address, info) {
   var result = {};
   result.address = address;
-  result.id = info[0].toNumber();
-  result.pack = unPacks[info[1].toNumber()];
-  result.actions = actionsString;
-  result.tx = info[3];
-  result.actionsDone = actionsDoneString;
+  result.id = info.toNumber();
+  return result;
+}
+
+// Get dates objects from transactions hashes list
+function txsToDates(web3, txs) {
+  var result = [];
+  for (let i = 0; i < txs.length; i++) {
+    var block = web3.eth.getTransaction(txs[i]).blockNumber;
+    var date = new Date(web3.eth.getBlock(block).timestamp * 1000);
+    result.push(date);
+  }
+  return result;
+}
+
+// Check if action done is in allowed actions
+function legal(allowed, done) {
+  for (let i = 0; i < done.length; i++) {
+    if (done[i] == "1" && allowed[i] != "1")
+      return false;
+  }
+  return true;
+}
+// Find out illegal actions done by the provider
+exports.checkDoneActions = function(web3, allowed, txsOfAllowed, done, txsOfDone) {
+  if (done.length == 0)
+    return done;
+  var result = [];
+  var datesOfAllowed = txsToDates(web3, txsOfAllowed);
+  var datesOfDone = txsToDates(web3, txsOfDone);
+  for (let i = 0; i < done.length; i++) {
+    if (allowed.length == 1) {
+      if (legal(allowed[0], done[i]))
+        result.push([done[i], "Allowed"])
+      else
+        result.push([done[i], "Not Allowed!"])
+    } else if (allowed.length == 2) {
+      if (datesOfDone[i] < datesOfAllowed[1]) {
+        if (legal(allowed[0], done[i]))
+          result.push([done[i], "Allowed"])
+        else
+          result.push([done[i], "Not Allowed!"])
+      } else {
+        if (legal(allowed[1], done[i]))
+          result.push([done[i], "Allowed"])
+        else
+          result.push([done[i], "Not Allowed!"])
+      }
+    } else {
+      let j = 0;
+      while (j < allowed.length - 1) {
+        if (datesOfDone[i] > datesOfAllowed[j] && datesOfDone[i] < datesOfAllowed[j + 1]) {
+          if (legal(allowed[j], done[i]))
+            result.push([done[i], "Allowed"])
+          else
+            result.push([done[i], "Not Allowed!"])
+        }
+        j++;
+      }
+    }
+  }
   return result;
 }
