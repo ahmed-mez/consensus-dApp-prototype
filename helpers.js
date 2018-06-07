@@ -198,33 +198,39 @@ exports.checkDoneActions = function(web3, allowed, txsOfAllowed, done, txsOfDone
   for (let i = 0; i < done.length; i++) {
     if (allowed.length == 1) {
       if (legal(allowed[0], done[i]))
-        result.push([done[i], "Allowed"])
+        result.push([done[i], "Allowed"]);
       else
-        result.push([done[i], "Not Allowed!"])
+        result.push([done[i], "Not Allowed!"]);
     } else if (allowed.length == 2) {
       if (datesOfDone[i] < datesOfAllowed[1]) {
         if (legal(allowed[0], done[i]))
-          result.push([done[i], "Allowed"])
+          result.push([done[i], "Allowed"]);
         else
-          result.push([done[i], "Not Allowed!"])
+          result.push([done[i], "Not Allowed!"]);
       } else {
         if (legal(allowed[1], done[i]))
-          result.push([done[i], "Allowed"])
+          result.push([done[i], "Allowed"]);
         else
-          result.push([done[i], "Not Allowed!"])
+          result.push([done[i], "Not Allowed!"]);
       }
     } else {
       let j = 0;
       while (j < allowed.length - 1) {
         if (datesOfDone[i] > datesOfAllowed[j] && datesOfDone[i] < datesOfAllowed[j + 1]) {
           if (legal(allowed[j], done[i]))
-            result.push([done[i], "Allowed"])
+            result.push([done[i], "Allowed"]);
           else
-            result.push([done[i], "Not Allowed!"])
+            result.push([done[i], "Not Allowed!"]);
+        } else if (datesOfDone[i] > datesOfAllowed[allowed.length - 1]) {
+          if (legal(allowed[allowed.length - 1], done[i]))
+            result.push([done[i], "Allowed"]);
+          else
+            result.push([done[i], "Not Allowed!"]);
+          break;
         }
-        j++;
-      }
+      j++;
     }
   }
-  return result;
+}
+return result;
 }
