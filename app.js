@@ -151,9 +151,7 @@ app.get('/auditor', function(req, res) {
     var doneActions = contractInstance.getDoneActions(addresses[i]);
     var doneActionsTx = contractInstance.getTxDoneActions(addresses[i]);
     var datesDoneActions = helpers.getDateFromTxHashes(web3, doneActionsTx);
-    var checkedDoneActions = helpers.checkDoneActions(web3, actions, actionsTx, doneActions, doneActionsTx)
-    console.log("checked actions");
-    console.log(checkedDoneActions);
+    var checkedDoneActions = helpers.checkDoneActions(web3, actions, actionsTx, doneActions, doneActionsTx);
     idBC.push(helpers.cleanClientInfo(addresses[i], id));
     packBC.push(helpers.cleanPack(pack));
     actionsBC.push(helpers.cleanAllowedActions(actions));
@@ -179,5 +177,5 @@ app.get('/auditor', function(req, res) {
 
 // Start listening
 app.listen(settings.PORT, settings.HOST, function() {
-  console.log("listening on port 8080");
+  console.log("dApp is listening on port 8080");
 });
