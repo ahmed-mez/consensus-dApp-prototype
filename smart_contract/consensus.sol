@@ -2,6 +2,7 @@ pragma solidity ^0.4.18;
 
 contract consensus {
 
+  // Every client is defined as a struct containing his choices and actions done on his data
   struct client {
     uint id;
     uint8[] pack;
@@ -50,6 +51,7 @@ contract consensus {
     return clients[_address].txs;
   }
 
+  // Function called when provider do actions on data
   function setDoneActions(address _address, uint8[3] _done_actions) public {
     uint8[3] memory acts;
     acts[0] = _done_actions[0];
@@ -62,6 +64,7 @@ contract consensus {
     return clients[_address].done_actions;
   }
 
+  // Function called when provider do actions on data
   function setTxDoneAction(address _address, bytes32 _tx_done_action) public {
   	clients[_address].tx_done_actions.push(_tx_done_action);
   }
@@ -75,9 +78,6 @@ contract consensus {
   }
 
   function notAdded(address clientAddr) view public returns (bool) {
-    if (clientsAddresses.length == 0) {
-      return true;
-    }
     for(uint i = 0; i < clientsAddresses.length; i++) {
       if (clientsAddresses[i] == clientAddr) {
         return false;
