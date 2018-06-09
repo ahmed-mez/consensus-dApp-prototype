@@ -148,7 +148,6 @@ exports.cleanDoneActions = function(actions) {
       }
     }
   }
-  console.log(result);
   return result;
 }
 
